@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Take unique entries from clipboard into file given as arg
+# this clears the clipboard to begin with
+# Usage: clipwrite file.txt
+
+printf "" | xclip -selection clipboard;
+while [[ $(xclip -o -selection clipboard) != "end" ]]; 
+do
+    xclip -o -selection clipboard >> $1;
+    # N.B, xclip does not put a newline after each clipping, uniq ensures the
+    # file ends in a new line s. t. every new append is on a new line.
+    uniq $1 $1.clipwrite_tmp;
+    mv $1.clipwrite_tmp $1;
+
+    sleep 1;
+done;
+

@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+# using clipwrite; grabs unique lines from clipboard, treats as urls (no
+# validation), and runs youtube-dl with them.
+# Usage: youtube-clip [height]
+
+# Take 1st argument as height if exists
+if [ $# -eq 1 ]; then
+    YTB_HEIGHT=$1
+else
+    YTB_HEIGHT=480
+fi
+
+YTB_DATE=$(date -I)
+YTB_DIR=~/Videos/yt/$YTB_DATE/
+
+# make directory if not exists
+if [ ! -d $YTB_DIR ]; then
+    mkdir $YTB_DIR
+fi
+
+cd $YTB_DIR
+clipwrite urls.txt
+youtube-dl -a urls.txt -f 'bestvideo[height<='$YTB_HEIGHT']+bestaudio/best[height<='$YTB_HEIGHT']'
+rm urls.txt
+
